@@ -29,7 +29,9 @@ public class ImportController {
             File tmp = File.createTempFile("openmetrics-", ".txt");
             file.transferTo(tmp);
 
-            System.out.println("Store Open Metrics File at: " + tmp.getAbsolutePath());
+            System.out.println("Stored Open Metrics File at: " + tmp.getAbsolutePath());
+
+            System.out.println("Cleaning Prometheus Data");
 
             File tsdb = new File(prometheusDataDir);
             if (tsdb.isDirectory()) {
@@ -39,6 +41,8 @@ public class ImportController {
                     }
                 }
             }
+
+            System.out.println("Generate New Data From Metrics File");
 
             // Run promtool
             ProcessBuilder pb = new ProcessBuilder(
@@ -50,12 +54,16 @@ public class ImportController {
             Process process = pb.start();
             int exitCode = process.waitFor();
 
-            //tmp.delete();
+            System.out.println("Cleaning Metrics File");
+
+            tmp.delete();
 
             if (exitCode != 0) {
                 return ResponseEntity.status(500)
                         .body("Failed to import OpenMetrics data. Exit code: " + exitCode);
             }
+
+            System.out.println("Trigger Prometheus reload");
 
             // Trigger Prometheus reload
             RestTemplate rest = new RestTemplate();
