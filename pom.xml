@@ -10,7 +10,7 @@
     </parent>
     <groupId>cambio.visualization</groupId>
     <artifactId>prometheus-service</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <name>prometheus-service</name>
     <description>prometheus-service</description>
     <url/>
