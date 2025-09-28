@@ -9,12 +9,18 @@ RUN mvn clean package -DskipTests
 FROM eclipse-temurin:21-jre
 
 # Set Prometheus version
-ENV PROM_VERSION=3.5.0
+ARG PROM_VERSION=3.6.0
+ARG PROM_ARCH=arm64   # set to amd64 for x86_64
 
 # Install Prometheus + promtool
-RUN curl -sSL https://github.com/prometheus/prometheus/releases/download/v${PROM_VERSION}/prometheus-${PROM_VERSION}.linux-amd64.tar.gz \
-    | tar -xz -C /opt && \
-    mv /opt/prometheus-${PROM_VERSION}.linux-amd64 /opt/prometheus
+RUN if [ "${PROM_ARCH}" = "amd64" ]; then \
+      FILE=prometheus-${PROM_VERSION}.linux-amd64.tar.gz; \
+    else \
+      FILE=prometheus-${PROM_VERSION}.linux-arm64.tar.gz; \
+    fi && \
+    curl -sSL "https://github.com/prometheus/prometheus/releases/download/v${PROM_VERSION}/${FILE}" \
+      | tar -xz -C /opt && \
+    mv /opt/prometheus-${PROM_VERSION}.linux-$( [ "${PROM_ARCH}" = "amd64" ] && echo "amd64" || echo "arm64" ) /opt/prometheus
 
 # Symlinks for convenience
 RUN ln -s /opt/prometheus/prometheus /usr/local/bin/prometheus && \
