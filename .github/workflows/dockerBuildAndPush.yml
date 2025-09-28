@@ -48,3 +48,6 @@ jobs:
             EXECUTION_ENV=ci
             GITHUB_TOKEN=${{ secrets.PUBLISH_PACKAGES }}
             GITHUB_USER=${{ github.actor }}
+          build-args-from-platform: |
+            linux/amd64=PROM_ARCH=amd64
+            linux/arm64=PROM_ARCH=arm64
