@@ -40,6 +40,7 @@ CMD sh -c "\
   prometheus \
     --config.file=/etc/prometheus/prometheus.yml \
     --storage.tsdb.path=/prometheus \
+    --storage.tsdb.retention.time=3650d \
     --web.enable-lifecycle & \
   java -jar /prometheus-service.jar \
 "
